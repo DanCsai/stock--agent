@@ -1,0 +1,5 @@
+interface:
+  display_name: "OpenSpec Apply"
+  short_description: "Implement tasks from a change"
+  default_prompt: "Use $openspec-apply-change to continue implementing the pending tasks in my active OpenSpec change."
+

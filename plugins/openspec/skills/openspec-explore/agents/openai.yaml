@@ -1,0 +1,5 @@
+interface:
+  display_name: "OpenSpec Explore"
+  short_description: "Explore a change before implementation"
+  default_prompt: "Use $openspec-explore to think through this change, inspect the codebase, and surface tradeoffs before coding."
+

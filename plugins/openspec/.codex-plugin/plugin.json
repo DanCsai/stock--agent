@@ -1,0 +1,26 @@
+{
+  "name": "openspec",
+  "version": "1.0.0",
+  "description": "OpenSpec workflows for proposal, exploration, implementation, and archiving.",
+  "author": {
+    "name": "OpenSpec",
+    "url": "https://github.com/openspec"
+  },
+  "license": "MIT",
+  "keywords": ["openspec", "spec-driven", "planning", "workflow"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "OpenSpec",
+    "shortDescription": "Spec-driven change workflows",
+    "longDescription": "Project-local OpenSpec skills for exploring ideas, proposing changes, implementing tasks, and archiving completed work.",
+    "developerName": "OpenSpec",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": [
+      "Use OpenSpec to propose a new change for this project.",
+      "Explore an architecture idea with OpenSpec before coding.",
+      "Implement the next tasks from my active OpenSpec change."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
