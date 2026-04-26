@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>基金助手</title>
+    <style>
+      :root {
+        --bg: #f5efe6;
+        --panel: rgba(255, 252, 246, 0.9);
+        --panel-strong: #fffaf3;
+        --line: rgba(87, 66, 36, 0.12);
+        --text: #2c241a;
+        --muted: #7a6752;
+        --brand: #1d6f62;
+        --brand-deep: #17564c;
+        --accent: #d98d3f;
+        --shadow: 0 24px 60px rgba(66, 47, 20, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Avenir Next", "PingFang SC", "Noto Sans SC", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(29, 111, 98, 0.14), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(217, 141, 63, 0.12), transparent 26%),
+          linear-gradient(145deg, #f6f2ea 0%, #f2ebde 52%, #efe5d4 100%);
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      .app-shell {
+        width: min(1320px, calc(100vw - 28px));
+        margin: 16px auto;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(14px);
+      }
+
+      .auth-screen {
+        min-height: calc(100vh - 32px);
+        display: grid;
+        grid-template-columns: minmax(320px, 520px) minmax(320px, 1fr);
+        gap: 22px;
+      }
+
+      .auth-hero {
+        padding: 36px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background:
+          linear-gradient(180deg, rgba(255, 252, 246, 0.95), rgba(255, 248, 240, 0.78)),
+          radial-gradient(circle at top right, rgba(29, 111, 98, 0.14), transparent 42%);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(29, 111, 98, 0.08);
+        color: var(--brand);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 18px 0 12px;
+        font-size: clamp(34px, 4vw, 58px);
+        line-height: 0.96;
+      }
+
+      .lead {
+        color: var(--muted);
+        line-height: 1.7;
+        max-width: 34rem;
+      }
+
+      .hero-notes {
+        display: grid;
+        gap: 12px;
+      }
+
+      .note {
+        padding: 18px 20px;
+        border-radius: 20px;
+        background: rgba(255, 250, 242, 0.8);
+        border: 1px solid rgba(87, 66, 36, 0.08);
+      }
+
+      .note strong {
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      .auth-panel {
+        padding: 30px;
+        display: flex;
+        align-items: center;
+      }
+
+      .auth-form-card {
+        width: min(460px, 100%);
+        margin: 0 auto;
+        padding: 28px;
+        border-radius: 24px;
+        background: rgba(255, 252, 246, 0.94);
+        border: 1px solid rgba(87, 66, 36, 0.08);
+      }
+
+      .auth-tabs {
+        display: inline-grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        background: rgba(29, 111, 98, 0.08);
+        border-radius: 16px;
+        padding: 6px;
+        margin-bottom: 24px;
+      }
+
+      .auth-tab {
+        border: 0;
+        border-radius: 12px;
+        background: transparent;
+        color: var(--muted);
+        padding: 12px 16px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .auth-tab.active {
+        background: white;
+        color: var(--brand);
+        box-shadow: 0 10px 22px rgba(29, 111, 98, 0.12);
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .field label {
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .field input {
+        border: 1px solid rgba(87, 66, 36, 0.12);
+        border-radius: 16px;
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.86);
+      }
+
+      .primary-btn,
+      .ghost-btn,
+      .session-card,
+      .upload-btn {
+        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      }
+
+      .primary-btn {
+        width: 100%;
+        border: 0;
+        border-radius: 18px;
+        padding: 15px 18px;
+        font-weight: 700;
+        color: white;
+        background: linear-gradient(135deg, var(--brand), var(--brand-deep));
+        cursor: pointer;
+        box-shadow: 0 14px 30px rgba(29, 111, 98, 0.22);
+      }
+
+      .ghost-btn {
+        border: 1px solid rgba(29, 111, 98, 0.18);
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--brand);
+        border-radius: 16px;
+        padding: 12px 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .primary-btn:hover,
+      .ghost-btn:hover,
+      .session-card:hover,
+      .upload-btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .form-status {
+        min-height: 22px;
+        font-size: 14px;
+        margin-top: 12px;
+        color: var(--brand);
+      }
+
+      .chat-screen {
+        min-height: calc(100vh - 32px);
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 18px;
+      }
+
+      .sidebar {
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        min-height: calc(100vh - 32px);
+      }
+
+      .profile-card {
+        padding: 18px;
+        border-radius: 22px;
+        background: linear-gradient(180deg, #eef7f4, #fffaf1);
+        border: 1px solid rgba(29, 111, 98, 0.1);
+      }
+
+      .profile-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .avatar {
+        width: 54px;
+        height: 54px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        color: white;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: inherit;
+        display: block;
+      }
+
+      .avatar.fern { background: linear-gradient(135deg, #1d6f62, #154d44); }
+      .avatar.aurora { background: linear-gradient(135deg, #3b82f6, #0f766e); }
+      .avatar.sunset { background: linear-gradient(135deg, #f97316, #b45309); }
+      .avatar.plum { background: linear-gradient(135deg, #7c3aed, #4c1d95); }
+      .avatar.rose { background: linear-gradient(135deg, #e11d48, #9f1239); }
+
+      .profile-name {
+        font-weight: 800;
+        font-size: 20px;
+      }
+
+      .profile-account {
+        color: var(--muted);
+        font-size: 14px;
+        margin-top: 4px;
+      }
+
+      .profile-actions {
+        margin-top: 16px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .upload-panel {
+        margin-top: 18px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .upload-btn {
+        border: 1px dashed rgba(29, 111, 98, 0.25);
+        background: rgba(255, 255, 255, 0.72);
+        border-radius: 16px;
+        padding: 14px 16px;
+        cursor: pointer;
+        color: var(--brand);
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .upload-hint {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .session-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 24px;
+        margin-bottom: 12px;
+      }
+
+      .session-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        overflow: auto;
+        padding-right: 2px;
+      }
+
+      .session-card {
+        border: 1px solid transparent;
+        background: var(--panel-strong);
+        border-radius: 18px;
+        padding: 14px;
+        cursor: pointer;
+      }
+
+      .session-card.active {
+        border-color: rgba(29, 111, 98, 0.22);
+        background: linear-gradient(180deg, #f0faf7, #fff9f0);
+      }
+
+      .session-title {
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .session-preview,
+      .session-meta,
+      .muted {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        min-height: calc(100vh - 32px);
+        overflow: hidden;
+      }
+
+      .workspace-header {
+        padding: 24px 28px 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .workspace-header h2 {
+        margin: 10px 0 8px;
+        font-size: clamp(28px, 2.6vw, 38px);
+        line-height: 1.05;
+      }
+
+      .workspace-header p {
+        margin: 0;
+        max-width: 42rem;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      .messages {
+        padding: 22px 28px;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .message-row {
+        display: flex;
+      }
+
+      .message-row.user {
+        justify-content: flex-end;
+      }
+
+      .message-bubble {
+        max-width: min(560px, 78%);
+        border-radius: 22px;
+        padding: 14px 18px;
+        line-height: 1.72;
+        box-shadow: 0 14px 30px rgba(60, 44, 20, 0.06);
+        animation: rise 200ms ease;
+      }
+
+      .message-row.user .message-bubble {
+        background: linear-gradient(135deg, var(--brand), var(--brand-deep));
+        color: white;
+        border-bottom-right-radius: 8px;
+      }
+
+      .message-row.assistant .message-bubble {
+        background: #fffaf2;
+        border: 1px solid rgba(87, 66, 36, 0.1);
+        border-bottom-left-radius: 8px;
+      }
+
+      .message-role {
+        display: block;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        opacity: 0.72;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+      }
+
+      .message-content {
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .empty-state {
+        margin: auto;
+        width: min(520px, 100%);
+        text-align: center;
+        padding: 28px;
+        color: var(--muted);
+      }
+
+      .composer {
+        border-top: 1px solid var(--line);
+        padding: 16px 20px 20px;
+      }
+
+      .composer-box {
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(87, 66, 36, 0.1);
+        border-radius: 24px;
+        padding: 14px;
+      }
+
+      .composer textarea {
+        width: 100%;
+        min-height: 88px;
+        border: 0;
+        resize: none;
+        background: transparent;
+        color: var(--text);
+      }
+
+      .composer textarea:focus {
+        outline: none;
+      }
+
+      .composer-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 10px;
+      }
+
+      .send-btn {
+        border: 0;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--accent), #bf6b14);
+        color: white;
+        padding: 12px 18px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .auth-screen,
+        .chat-screen {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar,
+        .workspace {
+          min-height: unset;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="auth-screen hidden" id="authScreen">
+        <div class="auth-hero card">
+          <div>
+            <div class="eyebrow">Fund Assistant</div>
+            <h1>先把用户体系和聊天体验都变顺眼。</h1>
+            <p class="lead">
+              这一版开始支持注册、登录、默认头像、会话隔离和更舒服的对话阅读体验。你的聊天记录将只属于当前账号。
+            </p>
+          </div>
+          <div class="hero-notes">
+            <div class="note">
+              <strong>账号体系</strong>
+              <span>账号、密码、用户名和头像都会绑定到你的个人资料中。</span>
+            </div>
+            <div class="note">
+              <strong>会话隔离</strong>
+              <span>每个用户只会看到自己的基金助手会话和消息历史。</span>
+            </div>
+            <div class="note">
+              <strong>界面升级</strong>
+              <span>我们把消息气泡、留白和整体比例都收紧了，不再像之前那样“一个框占半屏”。</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="auth-panel card">
+          <div class="auth-form-card">
+            <div class="auth-tabs">
+              <button class="auth-tab active" id="loginTab" type="button">登录</button>
+              <button class="auth-tab" id="registerTab" type="button">注册</button>
+            </div>
+
+            <form id="authForm">
+              <div class="field">
+                <label for="accountInput">账号</label>
+                <input id="accountInput" placeholder="例如：demo_user" required />
+              </div>
+              <div class="field hidden" id="usernameField">
+                <label for="usernameInput">用户名</label>
+                <input id="usernameInput" placeholder="例如：基金小助手" />
+              </div>
+              <div class="field">
+                <label for="passwordInput">密码</label>
+                <input id="passwordInput" type="password" placeholder="至少 6 位" required />
+              </div>
+              <button class="primary-btn" id="authSubmitButton" type="submit">登录并进入</button>
+            </form>
+            <div class="form-status" id="authStatus"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chat-screen hidden" id="chatScreen">
+        <aside class="sidebar card">
+          <div class="profile-card">
+            <div class="profile-row">
+              <div class="avatar fern" id="profileAvatar">基</div>
+              <div>
+                <div class="profile-name" id="profileName">基金助手用户</div>
+                <div class="profile-account" id="profileAccount">@demo_user</div>
+              </div>
+            </div>
+            <div class="profile-actions">
+              <button class="ghost-btn" type="button" id="toggleAvatarButton">更换头像</button>
+              <button class="ghost-btn" type="button" id="logoutButton">退出登录</button>
+            </div>
+            <div class="upload-panel hidden" id="avatarPicker">
+              <input class="hidden" id="avatarFileInput" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+              <button class="upload-btn" type="button" id="uploadAvatarButton">选择 jpg / png / webp 图片</button>
+              <div class="upload-hint">建议使用方形头像，上传后会立即替换当前头像。</div>
+            </div>
+            <div class="form-status" id="profileStatus"></div>
+          </div>
+
+          <div class="session-header">
+            <div>
+              <div class="eyebrow">Sessions</div>
+            </div>
+            <button class="ghost-btn" id="newSessionButton" type="button">新建</button>
+          </div>
+          <div class="session-list" id="sessionList"></div>
+        </aside>
+
+        <section class="workspace card">
+          <header class="workspace-header">
+            <div class="eyebrow">Private Workspace</div>
+            <h2 id="activeSessionTitle">开始一个只属于你的会话</h2>
+            <p id="activeSessionMeta">
+              这版先把账号、头像、会话隔离和基础问答链路打通，后面再继续接更强的模型和基金分析能力。
+            </p>
+          </header>
+
+          <div class="messages" id="messages"></div>
+
+          <footer class="composer">
+            <div class="composer-box">
+              <textarea
+                id="composer"
+                placeholder="例如：帮我看看最近消费基金的讨论方向，或者先发一句测试消息。"
+              ></textarea>
+              <div class="composer-footer">
+                <span class="muted">当前回答仍是占位回复，但会话和用户隔离已经生效。</span>
+                <button class="send-btn" id="sendButton" type="button">发送消息</button>
+              </div>
+            </div>
+          </footer>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      const state = {
+        authMode: "login",
+        user: null,
+        sessions: [],
+        activeSessionId: "",
+        loading: false,
+      };
+
+      const authScreenEl = document.getElementById("authScreen");
+      const chatScreenEl = document.getElementById("chatScreen");
+      const loginTabEl = document.getElementById("loginTab");
+      const registerTabEl = document.getElementById("registerTab");
+      const authFormEl = document.getElementById("authForm");
+      const authSubmitButtonEl = document.getElementById("authSubmitButton");
+      const authStatusEl = document.getElementById("authStatus");
+      const usernameFieldEl = document.getElementById("usernameField");
+      const accountInputEl = document.getElementById("accountInput");
+      const usernameInputEl = document.getElementById("usernameInput");
+      const passwordInputEl = document.getElementById("passwordInput");
+      const profileAvatarEl = document.getElementById("profileAvatar");
+      const profileNameEl = document.getElementById("profileName");
+      const profileAccountEl = document.getElementById("profileAccount");
+      const profileStatusEl = document.getElementById("profileStatus");
+      const avatarPickerEl = document.getElementById("avatarPicker");
+      const avatarFileInputEl = document.getElementById("avatarFileInput");
+      const uploadAvatarButtonEl = document.getElementById("uploadAvatarButton");
+      const toggleAvatarButtonEl = document.getElementById("toggleAvatarButton");
+      const logoutButtonEl = document.getElementById("logoutButton");
+      const newSessionButtonEl = document.getElementById("newSessionButton");
+      const sessionListEl = document.getElementById("sessionList");
+      const activeSessionTitleEl = document.getElementById("activeSessionTitle");
+      const activeSessionMetaEl = document.getElementById("activeSessionMeta");
+      const messagesEl = document.getElementById("messages");
+      const composerEl = document.getElementById("composer");
+      const sendButtonEl = document.getElementById("sendButton");
+
+      async function request(path, options = {}) {
+        const response = await fetch(path, {
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {}),
+          },
+          ...options,
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data.error || "请求失败");
+        }
+        return data;
+      }
+
+      function setAuthMode(mode) {
+        state.authMode = mode;
+        loginTabEl.classList.toggle("active", mode === "login");
+        registerTabEl.classList.toggle("active", mode === "register");
+        usernameFieldEl.classList.toggle("hidden", mode !== "register");
+        authSubmitButtonEl.textContent = mode === "login" ? "登录并进入" : "注册并进入";
+        authStatusEl.textContent = "";
+      }
+
+      function switchScreen() {
+        authScreenEl.classList.toggle("hidden", !!state.user);
+        chatScreenEl.classList.toggle("hidden", !state.user);
+      }
+
+      function renderProfile() {
+        if (!state.user) return;
+        const label = (state.user.username || "基").slice(0, 1);
+        const avatarValue = state.user.avatar || "fern";
+        if (avatarValue.startsWith("/uploads/")) {
+          profileAvatarEl.className = "avatar";
+          profileAvatarEl.innerHTML = `<img src="${encodeURI(avatarValue)}?t=${Date.now()}" alt="用户头像" />`;
+        } else {
+          profileAvatarEl.className = `avatar ${avatarValue}`;
+          profileAvatarEl.textContent = label;
+        }
+        profileNameEl.textContent = state.user.username;
+        profileAccountEl.textContent = `@${state.user.account}`;
+      }
+
+      function renderSessions() {
+        sessionListEl.innerHTML = "";
+        if (!state.sessions.length) {
+          sessionListEl.innerHTML = '<div class="muted">还没有会话，先新建一个开始吧。</div>';
+          return;
+        }
+        state.sessions.forEach((session) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "session-card" + (session.id === state.activeSessionId ? " active" : "");
+          button.innerHTML = `
+            <div class="session-title">${escapeHTML(session.title || "新会话")}</div>
+            <div class="session-preview">${escapeHTML(session.lastMessagePreview || "还没有消息")}</div>
+            <div class="session-meta">${formatDate(session.updatedAt || session.createdAt)}</div>
+          `;
+          button.addEventListener("click", () => loadSession(session.id));
+          sessionListEl.appendChild(button);
+        });
+      }
+
+      function renderMessages(messages) {
+        if (!messages.length) {
+          messagesEl.innerHTML = `
+            <div class="empty-state">
+              <h3>这个会话还没有消息</h3>
+              <p>先发一句问题，我们会用新的界面比例把整个聊天链路跑通。</p>
+            </div>
+          `;
+          return;
+        }
+
+        messagesEl.innerHTML = "";
+        messages.forEach((message) => {
+          const row = document.createElement("div");
+          row.className = "message-row " + (message.role === "user" ? "user" : "assistant");
+          row.innerHTML = `
+            <article class="message-bubble">
+              <span class="message-role">${message.role === "user" ? "用户" : "助手"}</span>
+              <div class="message-content">${escapeHTML(message.content)}</div>
+            </article>
+          `;
+          messagesEl.appendChild(row);
+        });
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      async function bootstrap() {
+        try {
+          const data = await request("/api/me");
+          state.user = data.user;
+          switchScreen();
+          renderProfile();
+          await loadSessions();
+          if (state.sessions.length) {
+            await loadSession(state.sessions[0].id);
+          } else {
+            renderMessages([]);
+          }
+        } catch (_) {
+          state.user = null;
+          switchScreen();
+        }
+      }
+
+      async function submitAuth(event) {
+        event.preventDefault();
+        authStatusEl.textContent = "正在处理...";
+        try {
+          const payload = {
+            account: accountInputEl.value.trim(),
+            password: passwordInputEl.value.trim(),
+          };
+          if (state.authMode === "register") {
+            payload.username = usernameInputEl.value.trim();
+          }
+
+          const data = await request(
+            state.authMode === "login" ? "/api/auth/login" : "/api/auth/register",
+            {
+              method: "POST",
+              body: JSON.stringify(payload),
+            }
+          );
+
+          state.user = data.user;
+          authStatusEl.textContent = "";
+          accountInputEl.value = "";
+          usernameInputEl.value = "";
+          passwordInputEl.value = "";
+          switchScreen();
+          renderProfile();
+          await loadSessions();
+          renderMessages([]);
+        } catch (error) {
+          authStatusEl.textContent = error.message;
+        }
+      }
+
+      async function loadSessions() {
+        const data = await request("/api/sessions");
+        state.sessions = data.sessions || [];
+        renderSessions();
+      }
+
+      async function createSession() {
+        const session = await request("/api/sessions", { method: "POST", body: "{}" });
+        await loadSessions();
+        await loadSession(session.id);
+        return session;
+      }
+
+      async function loadSession(sessionId) {
+        state.activeSessionId = sessionId;
+        renderSessions();
+
+        const data = await request(`/api/sessions/${sessionId}/messages`);
+        activeSessionTitleEl.textContent = data.session.title || "新会话";
+        activeSessionMetaEl.textContent = `最近更新时间：${formatDate(data.session.updatedAt || data.session.createdAt)}`;
+        renderMessages(data.messages || []);
+      }
+
+      async function sendMessage() {
+        const content = composerEl.value.trim();
+        if (!content || state.loading) {
+          return;
+        }
+
+        state.loading = true;
+        sendButtonEl.disabled = true;
+        sendButtonEl.textContent = "发送中...";
+
+        try {
+          if (!state.activeSessionId) {
+            await createSession();
+          }
+
+          const data = await request(`/api/sessions/${state.activeSessionId}/messages`, {
+            method: "POST",
+            body: JSON.stringify({ content }),
+          });
+          composerEl.value = "";
+          activeSessionTitleEl.textContent = data.session.title || "新会话";
+          activeSessionMetaEl.textContent = `最近更新时间：${formatDate(data.session.updatedAt || data.session.createdAt)}`;
+          renderMessages(data.messages || []);
+          await loadSessions();
+        } catch (error) {
+          profileStatusEl.textContent = error.message;
+        } finally {
+          state.loading = false;
+          sendButtonEl.disabled = false;
+          sendButtonEl.textContent = "发送消息";
+        }
+      }
+
+      async function updateAvatarWithFile(file) {
+        if (!file) {
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("avatar", file);
+
+        try {
+          profileStatusEl.textContent = "正在上传头像...";
+          const response = await fetch("/api/me/avatar/upload", {
+            method: "POST",
+            credentials: "same-origin",
+            body: formData,
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            throw new Error(data.error || "头像上传失败");
+          }
+          state.user = data.user;
+          renderProfile();
+          profileStatusEl.textContent = "头像已更新";
+          avatarPickerEl.classList.add("hidden");
+          avatarFileInputEl.value = "";
+        } catch (error) {
+          profileStatusEl.textContent = error.message;
+        }
+      }
+
+      async function logout() {
+        await request("/api/auth/logout", { method: "POST", body: "{}" });
+        state.user = null;
+        state.sessions = [];
+        state.activeSessionId = "";
+        switchScreen();
+        setAuthMode("login");
+      }
+
+      function formatDate(input) {
+        if (!input) return "刚刚";
+        const date = new Date(input);
+        if (Number.isNaN(date.getTime())) return input;
+        return date.toLocaleString("zh-CN", {
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      function escapeHTML(input) {
+        return String(input)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      loginTabEl.addEventListener("click", () => setAuthMode("login"));
+      registerTabEl.addEventListener("click", () => setAuthMode("register"));
+      authFormEl.addEventListener("submit", submitAuth);
+      newSessionButtonEl.addEventListener("click", createSession);
+      sendButtonEl.addEventListener("click", sendMessage);
+      logoutButtonEl.addEventListener("click", logout);
+      toggleAvatarButtonEl.addEventListener("click", () => avatarPickerEl.classList.toggle("hidden"));
+      uploadAvatarButtonEl.addEventListener("click", () => avatarFileInputEl.click());
+      avatarFileInputEl.addEventListener("change", (event) => {
+        const [file] = event.target.files || [];
+        updateAvatarWithFile(file);
+      });
+      composerEl.addEventListener("keydown", (event) => {
+        if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+          sendMessage();
+        }
+      });
+
+      setAuthMode("login");
+      bootstrap();
+    </script>
+  </body>
+</html>
