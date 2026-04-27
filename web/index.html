@@ -349,7 +349,7 @@
 
       .workspace {
         display: grid;
-        grid-template-rows: auto 1fr auto;
+        grid-template-rows: auto auto 1fr auto;
         min-height: calc(100vh - 32px);
         overflow: hidden;
       }
@@ -377,6 +377,212 @@
         overflow: auto;
         display: flex;
         flex-direction: column;
+        gap: 16px;
+      }
+
+      .fund-shell {
+        display: grid;
+        gap: 16px;
+        padding: 20px;
+        border-radius: 24px;
+        border: 1px solid rgba(29, 111, 98, 0.12);
+        background:
+          linear-gradient(180deg, rgba(255, 252, 246, 0.96), rgba(245, 252, 249, 0.88)),
+          radial-gradient(circle at top right, rgba(29, 111, 98, 0.08), transparent 36%);
+      }
+
+      .fund-panel-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .fund-panel-title {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .fund-summary {
+        margin: 6px 0 0;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .fund-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(29, 111, 98, 0.1);
+        color: var(--brand);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .candidate-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+      }
+
+      .candidate-card {
+        border: 1px solid rgba(29, 111, 98, 0.12);
+        background: rgba(255, 255, 255, 0.82);
+        border-radius: 18px;
+        padding: 14px;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .candidate-card strong,
+      .fund-profile-name {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 6px;
+      }
+
+      .candidate-card span,
+      .metric-label,
+      .chart-meta,
+      .placeholder-card p {
+        color: var(--muted);
+      }
+
+      .fund-layout {
+        display: grid;
+        grid-template-columns: minmax(280px, 360px) minmax(320px, 1fr);
+        gap: 16px;
+      }
+
+      .fund-card,
+      .chart-card,
+      .placeholder-card {
+        border-radius: 20px;
+        border: 1px solid rgba(87, 66, 36, 0.1);
+        background: rgba(255, 255, 255, 0.8);
+        padding: 18px;
+      }
+
+      .fund-code-line {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+
+      .fund-code-pill,
+      .trend-range.active {
+        background: rgba(29, 111, 98, 0.12);
+        color: var(--brand);
+      }
+
+      .fund-code-pill,
+      .trend-range {
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .metric {
+        padding: 12px;
+        border-radius: 16px;
+        background: rgba(245, 239, 230, 0.7);
+      }
+
+      .metric-value {
+        display: block;
+        margin-top: 6px;
+        font-size: 18px;
+        font-weight: 800;
+      }
+
+      .metric-value.positive {
+        color: #c46a17;
+      }
+
+      .metric-value.negative {
+        color: #1d6f62;
+      }
+
+      .trend-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .trend-ranges {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .trend-range {
+        border: 1px solid rgba(29, 111, 98, 0.14);
+        background: rgba(255, 255, 255, 0.75);
+        cursor: pointer;
+      }
+
+      .trend-svg {
+        width: 100%;
+        height: 220px;
+        display: block;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(29, 111, 98, 0.04), rgba(255, 255, 255, 0.2));
+      }
+
+      .chart-line {
+        fill: none;
+        stroke: var(--brand);
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .chart-area {
+        fill: rgba(29, 111, 98, 0.12);
+      }
+
+      .chart-grid {
+        stroke: rgba(87, 66, 36, 0.1);
+        stroke-width: 1;
+      }
+
+      .chart-axis-text {
+        fill: var(--muted);
+        font-size: 12px;
+      }
+
+      .chart-empty {
+        min-height: 220px;
+        display: grid;
+        place-items: center;
+        color: var(--muted);
+      }
+
+      .chart-axis-labels {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .placeholder-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 16px;
       }
 
@@ -423,6 +629,10 @@
         word-break: break-word;
       }
 
+      .message-rich-card {
+        width: min(1040px, 100%);
+      }
+
       .empty-state {
         margin: auto;
         width: min(520px, 100%);
@@ -464,6 +674,13 @@
         margin-top: 10px;
       }
 
+      .composer-status {
+        min-height: 20px;
+        margin-top: 8px;
+        font-size: 13px;
+        color: #b45309;
+      }
+
       .send-btn {
         border: 0;
         border-radius: 16px;
@@ -498,6 +715,11 @@
         .sidebar,
         .workspace {
           min-height: unset;
+        }
+
+        .fund-layout,
+        .placeholder-grid {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -592,7 +814,7 @@
             <div class="eyebrow">Private Workspace</div>
             <h2 id="activeSessionTitle">开始一个只属于你的会话</h2>
             <p id="activeSessionMeta">
-              这版先把账号、头像、会话隔离和基础问答链路打通，后面再继续接更强的模型和基金分析能力。
+              这版先把账号、头像、会话隔离和基金查询链路打通，后面再继续接更强的模型和基金分析能力。
             </p>
           </header>
 
@@ -602,12 +824,13 @@
             <div class="composer-box">
               <textarea
                 id="composer"
-                placeholder="例如：帮我看看最近消费基金的讨论方向，或者先发一句测试消息。"
+                placeholder="例如：搜索中欧医疗健康，或直接输入 000311 看看这只基金最近走势。"
               ></textarea>
               <div class="composer-footer">
-                <span class="muted">当前回答仍是占位回复，但会话和用户隔离已经生效。</span>
+                <span class="muted">当前已支持基金搜索、基础信息和走势查询，推荐与分析区先保留占位。</span>
                 <button class="send-btn" id="sendButton" type="button">发送消息</button>
               </div>
+              <div class="composer-status" id="composerStatus"></div>
             </div>
           </footer>
         </section>
@@ -621,6 +844,9 @@
         sessions: [],
         activeSessionId: "",
         loading: false,
+        fundResult: null,
+        fundSummary: "",
+        fundRange: "month",
       };
 
       const authScreenEl = document.getElementById("authScreen");
@@ -650,6 +876,7 @@
       const messagesEl = document.getElementById("messages");
       const composerEl = document.getElementById("composer");
       const sendButtonEl = document.getElementById("sendButton");
+      const composerStatusEl = document.getElementById("composerStatus");
 
       async function request(path, options = {}) {
         const response = await fetch(path, {
@@ -721,7 +948,7 @@
           messagesEl.innerHTML = `
             <div class="empty-state">
               <h3>这个会话还没有消息</h3>
-              <p>先发一句问题，我们会用新的界面比例把整个聊天链路跑通。</p>
+              <p>先搜索一只基金，页面会同步展示候选、基金卡片和近期走势。</p>
             </div>
           `;
           return;
@@ -739,7 +966,224 @@
           `;
           messagesEl.appendChild(row);
         });
+
+        if (state.fundResult) {
+          const cardRow = document.createElement("div");
+          cardRow.className = "message-row assistant";
+
+          const wrapper = document.createElement("div");
+          wrapper.className = "message-rich-card";
+          wrapper.appendChild(buildFundShell());
+          cardRow.appendChild(wrapper);
+          messagesEl.appendChild(cardRow);
+        }
+
         messagesEl.scrollTop = messagesEl.scrollHeight;
+      }
+
+      function buildFundShell() {
+        const shell = document.createElement("div");
+        shell.className = "fund-shell";
+
+        if (state.fundResult.mode === "candidates") {
+          shell.innerHTML = `
+            <div class="fund-panel-header">
+              <div>
+                <h3 class="fund-panel-title">找到一些可能相关的基金</h3>
+                <p class="fund-summary">${escapeHTML(state.fundSummary || "你可以先从候选里挑一只继续查看。")}</p>
+              </div>
+              <div class="fund-badge">候选 ${state.fundResult.candidates.length}</div>
+            </div>
+          `;
+
+          const list = document.createElement("div");
+          list.className = "candidate-list";
+          state.fundResult.candidates.forEach((candidate) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "candidate-card";
+            button.innerHTML = `
+              <strong>${escapeHTML(candidate.name)}</strong>
+              <span>${escapeHTML(candidate.code)} · ${escapeHTML(candidate.type || "基金")}</span>
+            `;
+            button.addEventListener("click", () => loadFundDetail(candidate.code, state.fundRange));
+            list.appendChild(button);
+          });
+          shell.appendChild(list);
+          return shell;
+        }
+
+        const profile = state.fundResult.profile || {};
+        const trend = state.fundResult.trend || { points: [] };
+
+        shell.innerHTML = `
+          <div class="fund-panel-header">
+            <div>
+              <h3 class="fund-panel-title">基金查询结果</h3>
+              <p class="fund-summary">${escapeHTML(state.fundSummary || "已为你加载基金基础信息与走势。")}</p>
+            </div>
+            <div class="fund-badge">${escapeHTML(rangeLabel(state.fundRange))}走势</div>
+          </div>
+        `;
+
+        const layout = document.createElement("div");
+        layout.className = "fund-layout";
+        layout.innerHTML = `
+          <article class="fund-card">
+            <strong class="fund-profile-name">${escapeHTML(profile.name || profile.code || "基金")}</strong>
+            <div class="fund-code-line">
+              <span class="fund-code-pill">${escapeHTML(profile.code || "--")}</span>
+              <span class="muted">${escapeHTML(profile.type || "基金类型待补充")}</span>
+            </div>
+            <div class="metrics-grid">
+              <div class="metric">
+                <span class="metric-label">基金公司</span>
+                <span class="metric-value">${escapeHTML(profile.company || "--")}</span>
+              </div>
+              <div class="metric">
+                <span class="metric-label">最新净值</span>
+                <span class="metric-value">${escapeHTML(profile.latestNav || profile.estimatedNav || "--")}</span>
+              </div>
+              <div class="metric">
+                <span class="metric-label">日涨跌幅</span>
+                <span class="metric-value ${changeClass(profile.dailyChange)}">${escapeHTML(formatChange(profile.dailyChange))}</span>
+              </div>
+              <div class="metric">
+                <span class="metric-label">数据日期</span>
+                <span class="metric-value">${escapeHTML(profile.asOfDate || "--")}</span>
+              </div>
+            </div>
+          </article>
+          <article class="chart-card">
+            <div class="trend-toolbar">
+              <div>
+                <strong>近期走势</strong>
+                <div class="chart-meta">支持按天、月、3个月、半年和 1 年切换</div>
+              </div>
+              <div class="trend-ranges" data-role="trend-ranges"></div>
+            </div>
+            <div data-role="trend-chart"></div>
+          </article>
+        `;
+        shell.appendChild(layout);
+
+        const placeholders = document.createElement("div");
+        placeholders.className = "placeholder-grid";
+        placeholders.innerHTML = `
+          <article class="placeholder-card">
+            <strong>推荐占位</strong>
+            <p>${escapeHTML(state.fundResult.recommendationPlaceholder || "后续 Agent 会在这里给出推荐建议。")}</p>
+          </article>
+          <article class="placeholder-card">
+            <strong>分析占位</strong>
+            <p>${escapeHTML(state.fundResult.analysisPlaceholder || "后续 Agent 会在这里补上对基金的分析与对比。")}</p>
+          </article>
+        `;
+        shell.appendChild(placeholders);
+
+        renderTrendRanges(shell, profile.code);
+        renderTrendChart(shell, trend);
+        return shell;
+      }
+
+      function renderTrendRanges(shell, code) {
+        const container = shell.querySelector('[data-role="trend-ranges"]');
+        if (!container || !code) return;
+        container.innerHTML = "";
+
+        [
+          ["day", "天"],
+          ["month", "月"],
+          ["3m", "3个月"],
+          ["6m", "半年"],
+          ["1y", "1年"],
+        ].forEach(([key, label]) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "trend-range" + (state.fundRange === key ? " active" : "");
+          button.textContent = label;
+          button.addEventListener("click", () => loadFundDetail(code, key));
+          container.appendChild(button);
+        });
+      }
+
+      function renderTrendChart(shell, trend) {
+        const container = shell.querySelector('[data-role="trend-chart"]');
+        if (!container) return;
+        const points = trend?.points || [];
+
+        if (!points.length) {
+          container.innerHTML = '<div class="chart-empty">暂无可展示的走势数据</div>';
+          return;
+        }
+
+        const values = points.map((item) => Number(item.value)).filter((value) => Number.isFinite(value));
+        if (!values.length) {
+          container.innerHTML = '<div class="chart-empty">暂无可展示的走势数据</div>';
+          return;
+        }
+
+        const width = 760;
+        const height = 260;
+        const paddingLeft = 54;
+        const paddingRight = 18;
+        const paddingTop = 18;
+        const paddingBottom = 34;
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+        const span = max - min || 1;
+        const stepX = points.length > 1 ? (width - paddingLeft - paddingRight) / (points.length - 1) : 0;
+        const baseline = values[0] || 1;
+        const xLabelIndexes = uniqueNumbers([0, Math.floor((points.length - 1) / 2), points.length - 1]);
+        const yTicks = [0, 0.25, 0.5, 0.75, 1].map((ratio) => {
+          const value = min + span * (1 - ratio);
+          const y = paddingTop + ratio * (height - paddingTop - paddingBottom);
+          const pct = ((value - baseline) / baseline) * 100;
+          return { value, y, pct };
+        });
+
+        const linePath = points
+          .map((point, index) => {
+            const x = paddingLeft + stepX * index;
+            const y = height - paddingBottom - ((Number(point.value) - min) / span) * (height - paddingTop - paddingBottom);
+            return `${index === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
+          })
+          .join(" ");
+
+        const areaPath = `${linePath} L ${paddingLeft + stepX * (points.length - 1)} ${height - paddingBottom} L ${paddingLeft} ${height - paddingBottom} Z`;
+        const lastPoint = points[points.length - 1];
+        const startPoint = points[0];
+        const xLabels = xLabelIndexes
+          .map((index) => {
+            const point = points[index];
+            const x = paddingLeft + stepX * index;
+            return `<text class="chart-axis-text" x="${x.toFixed(2)}" y="${height - 8}" text-anchor="${index === 0 ? "start" : index === points.length - 1 ? "end" : "middle"}">${escapeHTML(formatTrendLabel(point.date, state.fundRange))}</text>`;
+          })
+          .join("");
+        const yGuides = yTicks
+          .map(
+            (tick) => `
+              <line class="chart-grid" x1="${paddingLeft}" y1="${tick.y.toFixed(2)}" x2="${width - paddingRight}" y2="${tick.y.toFixed(2)}" />
+              <text class="chart-axis-text" x="${paddingLeft - 8}" y="${(tick.y + 4).toFixed(2)}" text-anchor="end">${formatPercent(tick.pct)}</text>
+            `
+          )
+          .join("");
+
+        container.innerHTML = `
+          <svg class="trend-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-label="基金走势折线图">
+            ${yGuides}
+            <line class="chart-grid" x1="${paddingLeft}" y1="${paddingTop}" x2="${paddingLeft}" y2="${height - paddingBottom}" />
+            <line class="chart-grid" x1="${paddingLeft}" y1="${height - paddingBottom}" x2="${width - paddingRight}" y2="${height - paddingBottom}" />
+            <path class="chart-area" d="${areaPath}"></path>
+            <path class="chart-line" d="${linePath}"></path>
+            ${xLabels}
+          </svg>
+          <div class="chart-axis-labels">
+            <span>起点：${escapeHTML(formatTrendLabel(startPoint.date || "--", state.fundRange))}</span>
+            <span>最新净值：${escapeHTML(String(lastPoint.value ?? "--"))}</span>
+            <span>区间涨跌：${formatPercent(((Number(lastPoint.value) - baseline) / baseline) * 100)}</span>
+          </div>
+        `;
       }
 
       async function bootstrap() {
@@ -809,6 +1253,8 @@
 
       async function loadSession(sessionId) {
         state.activeSessionId = sessionId;
+        state.fundResult = null;
+        state.fundSummary = "";
         renderSessions();
 
         const data = await request(`/api/sessions/${sessionId}/messages`);
@@ -823,6 +1269,7 @@
           return;
         }
 
+        composerStatusEl.textContent = "";
         state.loading = true;
         sendButtonEl.disabled = true;
         sendButtonEl.textContent = "发送中...";
@@ -837,12 +1284,15 @@
             body: JSON.stringify({ content }),
           });
           composerEl.value = "";
+          state.fundResult = data.fundResult || null;
+          state.fundSummary = data.assistantMessage?.content || "";
+          state.fundRange = data.fundResult?.trend?.range || "month";
           activeSessionTitleEl.textContent = data.session.title || "新会话";
           activeSessionMetaEl.textContent = `最近更新时间：${formatDate(data.session.updatedAt || data.session.createdAt)}`;
           renderMessages(data.messages || []);
           await loadSessions();
         } catch (error) {
-          profileStatusEl.textContent = error.message;
+          composerStatusEl.textContent = error.message || "发送失败，请稍后再试";
         } finally {
           state.loading = false;
           sendButtonEl.disabled = false;
@@ -884,8 +1334,24 @@
         state.user = null;
         state.sessions = [];
         state.activeSessionId = "";
+        state.fundResult = null;
+        state.fundSummary = "";
         switchScreen();
         setAuthMode("login");
+      }
+
+      async function loadFundDetail(code, rangeKey = "month") {
+        try {
+          composerStatusEl.textContent = "";
+          const data = await request(`/api/funds/${encodeURIComponent(code)}?range=${encodeURIComponent(rangeKey)}`);
+          state.fundResult = data.fundResult || null;
+          state.fundSummary = data.summary || "";
+          state.fundRange = state.fundResult?.trend?.range || rangeKey;
+          const sessionData = await request(`/api/sessions/${state.activeSessionId}/messages`);
+          renderMessages(sessionData.messages || []);
+        } catch (error) {
+          composerStatusEl.textContent = error.message || "基金详情加载失败";
+        }
       }
 
       function formatDate(input) {
@@ -907,6 +1373,58 @@
           .replaceAll(">", "&gt;")
           .replaceAll('"', "&quot;")
           .replaceAll("'", "&#39;");
+      }
+
+      function changeClass(value) {
+        const text = String(value || "").trim();
+        if (!text) return "";
+        if (text.startsWith("-")) return "negative";
+        return "positive";
+      }
+
+      function formatChange(value) {
+        const text = String(value || "").trim();
+        if (!text) return "--";
+        return text.endsWith("%") ? text : `${text}%`;
+      }
+
+      function rangeLabel(key) {
+        return (
+          {
+            day: "近天",
+            month: "近月",
+            "3m": "近3个月",
+            "6m": "近半年",
+            "1y": "近1年",
+          }[key] || "近月"
+        );
+      }
+
+      function formatTrendLabel(input, rangeKey) {
+        if (!input) return "--";
+        const date = new Date(input);
+        if (Number.isNaN(date.getTime())) return input;
+
+        if (rangeKey === "day") {
+          return date.toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit" });
+        }
+
+        if (rangeKey === "month") {
+          return date.toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit" });
+        }
+
+        return date.toLocaleDateString("zh-CN", { month: "2-digit", day: "2-digit" });
+      }
+
+      function formatPercent(value) {
+        const number = Number(value);
+        if (!Number.isFinite(number)) return "--";
+        const sign = number > 0 ? "+" : "";
+        return `${sign}${number.toFixed(2)}%`;
+      }
+
+      function uniqueNumbers(values) {
+        return [...new Set(values.filter((value) => Number.isInteger(value) && value >= 0))];
       }
 
       loginTabEl.addEventListener("click", () => setAuthMode("login"));

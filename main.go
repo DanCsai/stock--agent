@@ -8,6 +8,7 @@ import (
 
 	"stock_agent/internal/auth"
 	"stock_agent/internal/config"
+	"stock_agent/internal/fund"
 	"stock_agent/internal/reply"
 	"stock_agent/internal/store"
 	"stock_agent/router"
@@ -29,10 +30,13 @@ func main() {
 		log.Printf("legacy chat file %s still exists; this version now uses MySQL and ignores the old global chat file", cfg.LegacyChatFile)
 	}
 
+	fundService := fund.NewService(fund.NewEastMoneyProvider())
+
 	server := router.New(
 		normalizeHostPort(cfg.Port),
 		chatStore,
 		reply.NewService(),
+		fundService,
 		auth.NewService(cfg.DefaultAvatar),
 		cfg.SessionMaxAge,
 		cfg.AvatarUploadDir,

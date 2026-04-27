@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"stock_agent/internal/auth"
+	"stock_agent/internal/fund"
 	"stock_agent/internal/model"
 	"stock_agent/internal/reply"
 	"stock_agent/internal/store"
@@ -26,6 +27,7 @@ import (
 type Router struct {
 	repo          store.Repository
 	replyService  *reply.Service
+	fundService   *fund.Service
 	authService   *auth.Service
 	sessionMaxAge int
 	avatarDir     string
@@ -51,16 +53,18 @@ type askRequest struct {
 }
 
 type askResponse struct {
-	Session          model.Session   `json:"session"`
-	UserMessage      model.Message   `json:"userMessage"`
-	AssistantMessage model.Message   `json:"assistantMessage"`
-	Messages         []model.Message `json:"messages"`
+	Session          model.Session     `json:"session"`
+	UserMessage      model.Message     `json:"userMessage"`
+	AssistantMessage model.Message     `json:"assistantMessage"`
+	Messages         []model.Message   `json:"messages"`
+	FundResult       *fund.QueryResult `json:"fundResult,omitempty"`
 }
 
-func New(hostPort string, repo store.Repository, replyService *reply.Service, authService *auth.Service, sessionMaxAge int, avatarDir string) *server.Hertz {
+func New(hostPort string, repo store.Repository, replyService *reply.Service, fundService *fund.Service, authService *auth.Service, sessionMaxAge int, avatarDir string) *server.Hertz {
 	r := &Router{
 		repo:          repo,
 		replyService:  replyService,
+		fundService:   fundService,
 		authService:   authService,
 		sessionMaxAge: sessionMaxAge,
 		avatarDir:     avatarDir,
@@ -77,6 +81,8 @@ func New(hostPort string, repo store.Repository, replyService *reply.Service, au
 	h.GET("/api/me", r.handleGetMe)
 	h.PUT("/api/me/avatar", r.handleUpdateAvatar)
 	h.POST("/api/me/avatar/upload", r.handleUploadAvatar)
+	h.GET("/api/funds/search", r.handleFundSearch)
+	h.GET("/api/funds/:code", r.handleFundDetail)
 	h.POST("/api/sessions", r.handleCreateSession)
 	h.GET("/api/sessions", r.handleListSessions)
 	h.GET("/api/sessions/:id/messages", r.handleGetMessages)
@@ -268,6 +274,67 @@ func (r *Router) handleCreateSession(ctx context.Context, c *app.RequestContext)
 	c.JSON(consts.StatusCreated, session)
 }
 
+func (r *Router) handleFundSearch(ctx context.Context, c *app.RequestContext) {
+	_, ok := r.requireUser(ctx, c)
+	if !ok {
+		return
+	}
+	if r.fundService == nil {
+		r.writeError(c, consts.StatusNotImplemented, "fund service is not configured")
+		return
+	}
+
+	query := strings.TrimSpace(string(c.Query("query")))
+	if query == "" {
+		r.writeError(c, consts.StatusBadRequest, "query is required")
+		return
+	}
+
+	result, err := r.fundService.ResolveQuery(ctx, query, string(c.Query("range")))
+	if err != nil {
+		r.writeError(c, consts.StatusBadGateway, "failed to query fund data")
+		return
+	}
+	if result == nil {
+		c.JSON(consts.StatusOK, utils.H{"query": query, "fundResult": nil})
+		return
+	}
+
+	c.JSON(consts.StatusOK, utils.H{
+		"query":      query,
+		"summary":    fund.BuildSummary(result),
+		"fundResult": result,
+	})
+}
+
+func (r *Router) handleFundDetail(ctx context.Context, c *app.RequestContext) {
+	_, ok := r.requireUser(ctx, c)
+	if !ok {
+		return
+	}
+	if r.fundService == nil {
+		r.writeError(c, consts.StatusNotImplemented, "fund service is not configured")
+		return
+	}
+
+	code := strings.TrimSpace(c.Param("code"))
+	if code == "" {
+		r.writeError(c, consts.StatusBadRequest, "code is required")
+		return
+	}
+
+	result, err := r.fundService.LookupFund(ctx, code, string(c.Query("range")))
+	if err != nil {
+		r.writeError(c, consts.StatusBadGateway, "failed to load fund detail")
+		return
+	}
+
+	c.JSON(consts.StatusOK, utils.H{
+		"summary":    fund.BuildSummary(result),
+		"fundResult": result,
+	})
+}
+
 func (r *Router) handleListSessions(ctx context.Context, c *app.RequestContext) {
 	user, ok := r.requireUser(ctx, c)
 	if !ok {
@@ -337,7 +404,19 @@ func (r *Router) handleAsk(ctx context.Context, c *app.RequestContext) {
 		r.handleStoreError(c, err)
 		return
 	}
+
+	var fundResult *fund.QueryResult
+	if r.fundService != nil && fund.ShouldAttemptQuery(req.Content) {
+		fundResult, err = r.fundService.ResolveQuery(ctx, req.Content, "month")
+		if err != nil {
+			fundResult = nil
+		}
+	}
+
 	replyContent := r.replyService.GenerateReply(session, history, req.Content)
+	if fundResult != nil {
+		replyContent = fund.BuildSummary(fundResult)
+	}
 	assistantMessage, session, err := r.repo.AddMessage(ctx, user.ID, sessionID, "assistant", replyContent)
 	if err != nil {
 		r.handleStoreError(c, err)
@@ -354,6 +433,7 @@ func (r *Router) handleAsk(ctx context.Context, c *app.RequestContext) {
 		UserMessage:      userMessage,
 		AssistantMessage: assistantMessage,
 		Messages:         messages,
+		FundResult:       fundResult,
 	})
 }
 
@@ -451,6 +531,6 @@ func (r *Router) writeError(c *app.RequestContext, statusCode int, message strin
 	c.JSON(statusCode, utils.H{"error": message})
 }
 
-func BuildTestEngine(repo store.Repository, replyService *reply.Service, authService *auth.Service, sessionMaxAge int) *server.Hertz {
-	return New(":0", repo, replyService, authService, sessionMaxAge, "uploads")
+func BuildTestEngine(repo store.Repository, replyService *reply.Service, fundService *fund.Service, authService *auth.Service, sessionMaxAge int) *server.Hertz {
+	return New(":0", repo, replyService, fundService, authService, sessionMaxAge, "uploads")
 }
